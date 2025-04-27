@@ -24,3 +24,7 @@ unzip chromedriver_linux64.zip
 https://www.shodan.io/search?query=hostname:"S3"&page=4
 
 country:"KR" hostname:"s3"
+
+
+2025-04-27
+크롤링해서 가져오는 데이터를 DB에 추가할수 있게 수정함
