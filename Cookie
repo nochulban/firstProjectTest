@@ -1,0 +1,56 @@
+import requests
+from bs4 import BeautifulSoup
+import time
+
+# 로그인 후 추출한 쿠키
+cookies = {
+    'cf_clearance': '여기에_cf_clearance_값',
+    'SFSESSID': '여기에_SFSESSID_값'
+}
+
+# HTTP 요청 헤더 설정
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Referer': 'https://www.grayhatwarfare.com/',
+    'Connection': 'keep-alive',
+}
+
+# 결과 저장 리스트
+bucket_urls = []
+
+# 51페이지부터 시작
+start_page = 51
+end_page = 150  # 원하는 최대 페이지 수
+
+for page in range(start_page, end_page + 1):
+    url = f"https://www.grayhatwarfare.com/buckets?page={page}"
+    print(f"[+] 요청 중: Page {page}")
+
+    try:
+        response = requests.get(url, headers=headers, cookies=cookies)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            rows = soup.select("table.table tbody tr")
+            for row in rows:
+                cols = row.find_all('td')
+                if len(cols) >= 2:
+                    bucket = cols[1].get_text(strip=True)
+                    print(f"  - 버킷 발견: {bucket}")
+                    bucket_urls.append(bucket)
+        else:
+            print(f"[!] 요청 실패 (status {response.status_code}) — 페이지: {page}")
+            break
+    except Exception as e:
+        print(f"[!] 예외 발생 — 페이지 {page}: {e}")
+        break
+
+    time.sleep(1.5)  # 서버에 부담을 주지 않기 위해 딜레이
+
+# 결과 저장
+with open("buckets_51_to_150.txt", "w") as f:
+    for bucket in bucket_urls:
+        f.write(bucket + "\n")
+
+print(f"[+] 총 {len(bucket_urls)}개의 버킷 URL 저장 완료.")
