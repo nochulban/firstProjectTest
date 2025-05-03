@@ -30,3 +30,7 @@ country:"KR" hostname:"s3"
 seleniumAllPageTest_window.py에
 크롤링해서 가져오는 데이터를 DB에 추가할수 있게 수정함
 ubuntu 서버에서 돌릴 수 있게 수정할 예정
+
+2025-05-03
+seleniumAllPageTest_window.py에 중복검사체크 코드 추가
+
